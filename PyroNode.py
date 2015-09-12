@@ -31,9 +31,17 @@ class PyroNode(object):
         self._broker = None
         self.broker = kwargs.get('broker')
         self.update_funcs = []
-        self.update_freq = kwargs.get('update_freq', 1)
+        self.update_freq = kwargs.get('update_freq', 10)
         # Dictionary for storing data streams
         self.pn_data = {}
+
+    @property
+    def update_interval(self):
+        return 1/self.update_freq
+
+    @update_interval.setter
+    def update_interval(self, value):
+        self.update_freq = 1/value
 
     @property
     def broker(self):
@@ -62,7 +70,7 @@ class PyroNode(object):
         channel = kwargs.get('channel')
         broker = kwargs.get('broker')
         value = update_func()
-        logging.debug('PUT {0}:{1}'.format(channel, value))
+        #logging.debug('PUT {0}:{1}'.format(channel, value))
         broker.pn_put(value, channel)
 
     @classmethod
@@ -70,7 +78,7 @@ class PyroNode(object):
         channel = kwargs.get('channel')
         broker = kwargs.get('broker')
         value = broker.pn_get(channel)
-        logging.debug('GET {0}:{1}'.format(channel, value))
+        #logging.debug('GET {0}:{1}'.format(channel, value))
         if update_func:
             update_func(value)
 
