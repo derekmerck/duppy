@@ -69,7 +69,7 @@ class PyroNode(object):
     def put_in_channel(cls, update_func, *args, **kwargs):
         channel = kwargs.get('channel')
         broker = kwargs.get('broker')
-        value = update_func()
+        value = update_func(*args)
         #logging.debug('PUT {0}:{1}'.format(channel, value))
         broker.pn_put(value, channel)
 
@@ -80,7 +80,7 @@ class PyroNode(object):
         value = broker.pn_get(channel)
         #logging.debug('GET {0}:{1}'.format(channel, value))
         if update_func:
-            update_func(value)
+            update_func(value, *args)
 
     def update(self, update_func=None, **kwargs):
         raise NotImplementedError

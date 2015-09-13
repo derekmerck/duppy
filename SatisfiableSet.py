@@ -1,5 +1,5 @@
 # Given a set of conditions on variables, see if a set of variables satisfies it,
-# or could satisfy it.   hhjhk
+# or could satisfy it.
 
 import warnings
 import logging
