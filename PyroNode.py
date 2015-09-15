@@ -31,7 +31,7 @@ class PyroNode(object):
         self._broker = None
         self.broker = kwargs.get('broker')
         self.update_funcs = []
-        self.update_freq = kwargs.get('update_freq', 10)
+        self.update_freq = kwargs.get('update_freq', 1000)
         # Dictionary for storing data streams
         self.pn_data = {}
 
@@ -87,11 +87,15 @@ class PyroNode(object):
 
     def run(self):
         def update_loop():
-            secs = 1/self.update_freq
+            interval = 1/self.update_freq
             while 1:
-                time.sleep(secs)
+                time_begin = time.time()
                 for update in self.update_funcs:
                     update[0](update[1], *update[2], **update[3])
+                time_end = time.time()
+                time_elapsed = time_end - time_begin
+                if interval - time_elapsed > 0:
+                    time.sleep(interval - time_elapsed)
         thread = threading.Thread(target=update_loop)
         thread.setDaemon(True)
         thread.start()
