@@ -31,17 +31,17 @@ class PyroNode(object):
         self._broker = None
         self.broker = kwargs.get('broker')
         self.update_funcs = []
-        self.update_freq = kwargs.get('update_freq', 1000)
+        self.update_freq = kwargs.get('update_freq', 1000.)
         # Dictionary for storing data streams
         self.pn_data = {}
 
     @property
     def update_interval(self):
-        return 1/self.update_freq
+        return 1./self.update_freq
 
     @update_interval.setter
     def update_interval(self, value):
-        self.update_freq = 1/value
+        self.update_freq = 1./value
 
     @property
     def broker(self):
