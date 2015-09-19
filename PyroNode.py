@@ -34,6 +34,8 @@ class PyroNode(object):
         self.update_freq = kwargs.get('update_freq', 1000.)
         # Dictionary for storing data streams
         self.pn_data = {}
+        # Simple lock on pn_data access
+        self.lock = threading.Lock()
 
     @property
     def update_interval(self):
@@ -71,7 +73,8 @@ class PyroNode(object):
         broker = kwargs.get('broker')
         value = update_func(*args)
         #logging.debug('PUT {0}:{1}'.format(channel, value))
-        broker.pn_put(value, channel)
+        if value:
+            broker.pn_put(value, channel)
 
     @classmethod
     def get_from_channel(cls, update_func, *args, **kwargs):
@@ -79,7 +82,7 @@ class PyroNode(object):
         broker = kwargs.get('broker')
         value = broker.pn_get(channel)
         #logging.debug('GET {0}:{1}'.format(channel, value))
-        if update_func:
+        if value and update_func:
             update_func(value, *args)
 
     def update(self, update_func=None, **kwargs):
