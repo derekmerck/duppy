@@ -34,8 +34,8 @@ class PyroNode(object):
         self.update_freq = kwargs.get('update_freq', 1000.)
         # Dictionary for storing data streams
         self.pn_data = {}
-        # Simple lock on pn_data access
-        self.lock = threading.Lock()
+        # Do not need a lock on pn_data access b/c only the owner writes to it
+        # self.lock = threading.Lock()
 
     @property
     def update_interval(self):
