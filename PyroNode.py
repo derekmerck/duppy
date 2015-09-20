@@ -5,12 +5,17 @@ import Pyro4
 import numpy as np
 import time
 import threading
+import os
 
 
 class PyroNode(object):
 
     # Shared deamon object
-    daemon = Pyro4.Daemon()
+    host = os.uname()[1]
+    if host.endswith('.local'):
+        # Get rid of OSX local domain
+        host = host[:-6]
+    daemon = Pyro4.Daemon(host=host)
 
     @classmethod
     def get_proxy(cls, node):
@@ -22,6 +27,8 @@ class PyroNode(object):
             return None
 
     def __init__(self, **kwargs):
+        logging.debug(PyroNode.host)
+
         self.pn_id = kwargs.get('pn_id')
         # self._pn_status = 'init'
         self.logger = logging.getLogger(self.pn_id)
