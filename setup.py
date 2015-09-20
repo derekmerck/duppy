@@ -54,7 +54,7 @@ setup(
     # long_description=long_desc,
     url=__url__,
     license=__license__,
-    py_modules=["PERSEUS"],
+    py_modules=["PyroNode", "SatisfiableSet", "SMSMessenger"],
     include_package_data=True,
     zip_safe=True,
     install_requires=['Pyro4', 'PyYAML', 'Numpy'],
