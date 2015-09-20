@@ -51,7 +51,7 @@ setup(
     author=__author__,
     author_email=__email__,
     version=__version__,
-    long_description=long_desc,
+    # long_description=long_desc,
     url=__url__,
     license=__license__,
     py_modules=["PERSEUS"],
