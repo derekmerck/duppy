@@ -39,11 +39,11 @@ def read(*paths):
     with open(os.path.join(*paths), 'r') as f:
         return f.read()
 
-# README.md is preferred
-long_desc = read('README.md')
-# pypi requires a README.rst, so we create one with pandoc and include it in the source distribution
-if os.path.exists('README.rst'):
-    long_desc = read('README.rst')
+# # README.md is preferred
+# long_desc = read('README.md')
+# # pypi requires a README.rst, so we create one with pandoc and include it in the source distribution
+# if os.path.exists('README.rst'):
+#     long_desc = read('README.rst')
 
 setup(
     name=__package__,
