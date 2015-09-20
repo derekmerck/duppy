@@ -1,11 +1,14 @@
 # Implements a simple Pyro4 network with data brokers, sinks, and sources
 
 import logging
+# logging.basicConfig()  # or your own sophisticated setup
+# logging.getLogger("Pyro4").setLevel(logging.DEBUG)
+# logging.getLogger("Pyro4.core").setLevel(logging.DEBUG)
+import os
 import Pyro4
 import numpy as np
 import time
 import threading
-import os
 
 
 class PyroNode(object):
@@ -27,11 +30,10 @@ class PyroNode(object):
             return None
 
     def __init__(self, **kwargs):
-        logging.debug(PyroNode.host)
-
         self.pn_id = kwargs.get('pn_id')
         # self._pn_status = 'init'
         self.logger = logging.getLogger(self.pn_id)
+        self.logger.debug('Setting up {0}@{1}'.format(self.pn_id, PyroNode.host))
         uri = PyroNode.daemon.register(self)
         ns = Pyro4.locateNS()
         ns.register(self.pn_id, uri)
@@ -134,9 +136,21 @@ def test_pyronode():
     PyroNode.daemon.requestLoop()
 
 
+def test_multihost_pyronode():
+
+    ns = Pyro4.locateNS()
+    uri0 = ns.lookup('control0')
+    uri1 = ns.lookup('control1')
+
+    c0 = Pyro4.Proxy(uri0)
+    c1 = Pyro4.Proxy(uri1)
+
+    logging.debug(c0.broker)
+    logging.debug(c1.broker)
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    test_pyronode()
+    test_multihost_pyronode()
 
 
 
