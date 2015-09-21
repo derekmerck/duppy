@@ -10,7 +10,8 @@ import numpy as np
 import time
 import threading
 
-Pyro4.config.SOCK_REUSE = True
+# Doesn't like this argument on Windows
+#Pyro4.config.SOCK_REUSE = True
 
 # Not a good idea to use this on an isolated subnet
 def get_public_ip_addr():
