@@ -4,20 +4,39 @@ import logging
 # logging.basicConfig()  # or your own sophisticated setup
 # logging.getLogger("Pyro4").setLevel(logging.DEBUG)
 # logging.getLogger("Pyro4.core").setLevel(logging.DEBUG)
-import os
+# import os
 import Pyro4
 import numpy as np
 import time
 import threading
 
+Pyro4.config.SOCK_REUSE = True
+
+# Not a good idea to use this on an isolated subnet
+def get_public_ip_addr():
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 80))
+    ip_addr = s.getsockname()[0]
+    s.close()
+    return ip_addr
+
+
+# This only works if hostnames resolve (shared /etc/hosts or lan router)
+def get_host_name():
+    import platform
+    # host = os.uname()[1]
+    host = platform.uname()[1]
+    if host.endswith('.local'):
+        # Get rid of OSX ".local" domain
+        host = host[:-6]
+    return host
+
 
 class PyroNode(object):
 
     # Shared deamon object
-    host = os.uname()[1]
-    if host.endswith('.local'):
-        # Get rid of OSX local domain
-        host = host[:-6]
+    host = get_public_ip_addr()
     daemon = Pyro4.Daemon(host=host)
 
     @classmethod
