@@ -72,13 +72,13 @@ class TypedValue(object):
 
 class TypedCondition(object):
 
-    def __init__(self, variable, operator, value, value1=None):
+    def __init__(self, variable, operator, value, *args):
         if isinstance(variable, basestring):
             # It's just a name
             variable = VariableType(name=variable)
         self.variable = variable
         self.value = value
-        self.value1 = value1
+        self.value1 = args
         self.operator = operator
         # self.prediction_range = prediction_range
 
@@ -121,15 +121,31 @@ class TypedCondition(object):
         elif self.operator == 'LTE':
             return typed_value.value <= self.value
         elif self.operator == 'EQ':
-            return typed_value.value == self.value
+            if self.value1 is None:
+                return typed_value.value == self.value
+            elif not isinstance(self.value1, (list, tuple)):
+                return typed_value.value == self.value or typed_value.value == self.value1
+            else:  # It must be a list
+                if typed_value.value == self.value:
+                    return True
+                for value in self.value1:
+                    if typed_value.value == value:
+                        return True
+                return False
         elif self.operator == 'NEQ':
             return typed_value.value != self.value
         elif self.operator == 'IN':
             return self.value < typed_value.value < self.value1
         elif self.operator == 'TLT':  # Trending less than
-            return self.value < typed_value.predict(self.prediction_range)
+            if hasattr(typed_value, 'predict'):
+                return self.value < typed_value.predict(self.prediction_range)
+            else:
+                return False
         elif self.operator == 'TGT':  # Trending greater than
-            return self.value > typed_value.predict(self.prediction_range)
+            if hasattr(typed_value, 'predict'):
+                return self.value > typed_value.predict(self.prediction_range)
+            else:
+                return False
         else:
             warnings.warn('No operation defined for %s' % self.operator)
             return False
@@ -167,6 +183,12 @@ class TypedValueSet(object):
 
     def __repr__(self):
         return repr(self.typed_values)
+
+    def as_dict(self):
+        d = {}
+        for item in self.typed_values:
+            d[item.variable.name] = item.value
+        return d
 
 
 class TypedConditionSet(object):
