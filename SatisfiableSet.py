@@ -83,6 +83,8 @@ class TypedCondition(object):
         # self.prediction_range = prediction_range
 
     def satisfied_by_any(self, typed_value_set):
+        if isinstance(typed_value_set, dict):
+            typed_value_set = TypedValueSet(typed_value_set)
         for typed_value in typed_value_set.typed_values:
             if self.comparable(typed_value):
                 if self.satisfied_by(typed_value):
@@ -90,6 +92,8 @@ class TypedCondition(object):
         return False
 
     def not_satisfied_by_any(self, typed_value_set):
+        if isinstance(typed_value_set, dict):
+            typed_value_set = TypedValueSet(typed_value_set)
         for typed_value in typed_value_set.typed_values:
             if self.comparable(typed_value):
                 if not self.satisfied_by(typed_value):
