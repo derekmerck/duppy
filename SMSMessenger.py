@@ -48,7 +48,10 @@ class SMSMessenger:
         server = smtplib.SMTP(relay_server)
         server.starttls()
         server.login(relay_username, relay_password)
-        server.sendmail(from_addr, to_addr, msg)
+        logging.debug(from_addr)
+        logging.debug(to_addr)
+        logging.debug(msg.encode(encoding='UTF-8'))
+        server.sendmail(from_addr, to_addr, msg.encode(encoding='UTF-8'))
         server.quit()
 
 
@@ -60,7 +63,7 @@ def test_sms():
     carrier = os.environ['carrier']
 
     m = SMSMessenger( relay_user, relay_pword, from_name )
-    m.message( phone_number, carrier, 'This is a test message' )
+    m.message( phone_number, carrier, 'MAX ALERT | Room 1 | V.TACH | Current HR 120 bpm | Current SpO2 85 % ' )
 
 
 if __name__ == "__main__":
